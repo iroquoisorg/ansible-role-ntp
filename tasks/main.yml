@@ -1,0 +1,14 @@
+- name: Check if NTP on timedatectl is enabled
+  command: "timedatectl"
+  register: timedatectl_output
+  changed_when: false
+
+- name: Disable NTP on timedatectl
+  command: "timedatectl set-ntp no"
+  ignore_errors: yes
+  when: "timedatectl_output.stdout|search('Network time on: yes')"
+
+- name: Install ntp
+  apt:
+    name: ntp
+    state: present
